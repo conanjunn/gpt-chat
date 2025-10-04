@@ -34,6 +34,7 @@
             padding: 10px 15px;
             border-radius: 18px;
             word-wrap: break-word;
+            white-space: pre-wrap;
         }
         .user .message-content {
             background: #007AFF;
@@ -42,6 +43,37 @@
         .assistant .message-content {
             background: white;
             color: black;
+        }
+        .assistant .message-content p {
+            margin: 0.5em 0;
+        }
+        .assistant .message-content pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 0.5em 0;
+        }
+        .assistant .message-content code {
+            background: #e8e8e8;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+        .assistant .message-content pre code {
+            background: none;
+            padding: 0;
+        }
+        .assistant .message-content ul, .assistant .message-content ol {
+            margin: 0.5em 0;
+            padding-left: 1.5em;
+        }
+        .assistant .message-content blockquote {
+            border-left: 3px solid #ddd;
+            padding-left: 10px;
+            margin: 0.5em 0;
+            color: #666;
         }
         #input-area {
             display: flex;
@@ -79,6 +111,7 @@
         <button id="send-btn">发送</button>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
         const messagesDiv = document.getElementById('messages');
         const messageInput = document.getElementById('message-input');
@@ -100,7 +133,7 @@
                     if (item.role === 'user') {
                         addMessage('user', item.content[0].text);
                     } else if (item.role === 'assistant') {
-                        addMessage('assistant', item.content[0].text);
+                        addMessage('assistant', item.content[0].text, true);
                     }
                 }
             } catch (error) {
@@ -108,12 +141,18 @@
             }
         }
 
-        function addMessage(role, content) {
+        function addMessage(role, content, isMarkdown = false) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${role}`;
             const contentDiv = document.createElement('div');
             contentDiv.className = 'message-content';
-            contentDiv.textContent = content;
+
+            if (isMarkdown && role === 'assistant') {
+                contentDiv.innerHTML = marked.parse(content);
+            } else {
+                contentDiv.textContent = content;
+            }
+
             messageDiv.appendChild(contentDiv);
             messagesDiv.appendChild(messageDiv);
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
@@ -129,6 +168,7 @@
             sendBtn.disabled = true;
 
             const assistantDiv = addMessage('assistant', '');
+            let fullText = '';
 
             try {
                 const response = await fetch('/chat', {
@@ -147,7 +187,8 @@
                     const {done, value} = await reader.read();
                     if (done) break;
                     const text = decoder.decode(value);
-                    assistantDiv.textContent += text;
+                    fullText += text;
+                    assistantDiv.innerHTML = marked.parse(fullText);
                     messagesDiv.scrollTop = messagesDiv.scrollHeight;
                 }
             } catch (error) {
