@@ -10,6 +10,10 @@ app = Flask(__name__)
 def index():
     return send_from_directory('.', 'index.html')
 
+@app.route('/marked.min.js')
+def marked_js():
+    return send_from_directory('.', 'marked.min.js')
+
 # 内存存储聊天记录
 conversations = {}
 last_access = {}
@@ -103,4 +107,4 @@ def clear_history(conversation_id):
     return jsonify({"status": "ok"})
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=True)
