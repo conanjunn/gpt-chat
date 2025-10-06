@@ -1,0 +1,15 @@
+# API 配置示例
+# 复制此文件为 config.py 并填入你的实际配置
+
+# OpenAI Responses API 端点
+API_URL = "https://api.openai.com/v1/responses"
+
+# API 认证密钥
+API_KEY = "your-api-key-here"
+
+# 使用的模型
+# 可选: gpt-4, gpt-5-codex, 或其他支持 Responses API 的模型
+MODEL = "gpt-4"
+
+# 系统指令 - 定义 AI 的角色和行为
+INSTRUCTIONS = "你是一个有帮助的助手"
