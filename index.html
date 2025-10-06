@@ -86,6 +86,7 @@
             padding: 10px;
             background: white;
             border-top: 1px solid #ddd;
+            flex-shrink: 0;
         }
         #message-input {
             flex: 1;
@@ -135,6 +136,7 @@
             border-top: 1px solid #ddd;
             display: flex;
             justify-content: center;
+            flex-shrink: 0;
         }
         #reasoning-effort {
             padding: 8px 15px;
@@ -159,6 +161,7 @@
             #input-area {
                 padding: 8px;
                 padding-bottom: max(20px, calc(env(safe-area-inset-bottom) + 12px));
+                flex-shrink: 0;
             }
             #message-input {
                 font-size: 16px; /* 防止iOS自动缩放 */
@@ -180,6 +183,7 @@
             }
             #control-area {
                 padding: 8px;
+                flex-shrink: 0;
             }
             #reasoning-effort {
                 padding: 10px 12px;
@@ -203,9 +207,9 @@
     <div id="messages"></div>
     <div id="control-area">
         <select id="reasoning-effort">
-            <option value="off">关闭推理</option>
+            <option value="off" selected>关闭推理</option>
             <option value="low">快速推理</option>
-            <option value="medium" selected>平衡推理</option>
+            <option value="medium">平衡推理</option>
             <option value="high">深度推理</option>
         </select>
     </div>
