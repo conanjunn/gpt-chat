@@ -15,7 +15,7 @@
             height: 100vh; /* fallback */
             height: 100dvh; /* 动态视口高度 */
             display: grid;
-            grid-template-rows: 1fr auto auto;
+            grid-template-rows: 1fr auto;
             -webkit-tap-highlight-color: transparent;
             -webkit-touch-callout: none;
             overflow: hidden;
@@ -81,12 +81,7 @@
             margin: 0.5em 0;
             color: #666;
         }
-        #input-area {
-            display: flex;
-            padding: 10px;
-            background: white;
-            border-top: 1px solid #ddd;
-        }
+        /* 移除旧的 input-area 样式 */
         #message-input {
             flex: 1;
             padding: 10px 15px;
@@ -129,12 +124,21 @@
         #clear-btn:active {
             background: #d32f2f;
         }
-        #control-area {
-            padding: 10px;
+        #bottom-area {
             background: white;
             border-top: 1px solid #ddd;
+        }
+        #input-row {
             display: flex;
-            justify-content: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        #control-row {
+            display: flex;
+            padding: 8px 10px;
+            gap: 10px;
+            align-items: center;
+            justify-content: space-between;
         }
         #reasoning-effort {
             padding: 8px 15px;
@@ -156,9 +160,15 @@
                 max-width: 85%;
                 font-size: 14px;
             }
-            #input-area {
-                padding: 8px;
+            #bottom-area {
                 padding-bottom: max(20px, calc(env(safe-area-inset-bottom) + 12px));
+            }
+            #input-row {
+                padding: 8px;
+            }
+            #control-row {
+                padding: 6px 8px;
+                gap: 8px;
             }
             #message-input {
                 font-size: 16px; /* 防止iOS自动缩放 */
@@ -177,9 +187,6 @@
             }
             .assistant .message-content code {
                 font-size: 0.85em;
-            }
-            #control-area {
-                padding: 8px;
             }
             #reasoning-effort {
                 padding: 10px 12px;
@@ -201,18 +208,20 @@
 </head>
 <body>
     <div id="messages"></div>
-    <div id="control-area">
-        <select id="reasoning-effort">
-            <option value="off" selected>关闭推理</option>
-            <option value="low">快速推理</option>
-            <option value="medium">平衡推理</option>
-            <option value="high">深度推理</option>
-        </select>
-    </div>
-    <div id="input-area">
-        <button id="clear-btn">清除</button>
-        <input type="text" id="message-input" placeholder="输入消息...">
-        <button id="send-btn">发送</button>
+    <div id="bottom-area">
+        <div id="input-row">
+            <input type="text" id="message-input" placeholder="输入消息...">
+            <button id="send-btn">发送</button>
+        </div>
+        <div id="control-row">
+            <button id="clear-btn">清除</button>
+            <select id="reasoning-effort">
+                <option value="off" selected>关闭推理</option>
+                <option value="low">快速推理</option>
+                <option value="medium">平衡推理</option>
+                <option value="high">深度推理</option>
+            </select>
+        </div>
     </div>
 
     <script src="marked.min.js"></script>
