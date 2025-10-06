@@ -129,6 +129,22 @@
         #clear-btn:active {
             background: #d32f2f;
         }
+        #control-area {
+            padding: 10px;
+            background: white;
+            border-top: 1px solid #ddd;
+            display: flex;
+            justify-content: center;
+        }
+        #reasoning-effort {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 14px;
+            outline: none;
+            background: white;
+            cursor: pointer;
+        }
 
         /* 移动端适配 */
         @media (max-width: 768px) {
@@ -162,6 +178,13 @@
             .assistant .message-content code {
                 font-size: 0.85em;
             }
+            #control-area {
+                padding: 8px;
+            }
+            #reasoning-effort {
+                padding: 10px 12px;
+                font-size: 13px;
+            }
         }
 
         /* 小屏手机适配 */
@@ -178,6 +201,14 @@
 </head>
 <body>
     <div id="messages"></div>
+    <div id="control-area">
+        <select id="reasoning-effort">
+            <option value="off">关闭推理</option>
+            <option value="low">快速推理</option>
+            <option value="medium" selected>平衡推理</option>
+            <option value="high">深度推理</option>
+        </select>
+    </div>
     <div id="input-area">
         <button id="clear-btn">清除</button>
         <input type="text" id="message-input" placeholder="输入消息...">
@@ -245,12 +276,14 @@
             let fullText = '';
 
             try {
+                const reasoningEffort = document.getElementById('reasoning-effort').value;
                 const response = await fetch('/chat', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
                         message: message,
-                        conversation_id: conversationId
+                        conversation_id: conversationId,
+                        reasoning_effort: reasoningEffort
                     })
                 });
 
@@ -297,10 +330,32 @@
             }
         }
 
-        sendBtn.addEventListener('click', sendMessage);
-        messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
+        // 发送按钮 - 兼容移动端和PC端
+        let sendBtnPressed = false;
+
+        sendBtn.addEventListener('mousedown', (e) => {
+            e.preventDefault(); // 防止输入框失焦
+            sendBtnPressed = true;
+            sendMessage();
         });
+
+        sendBtn.addEventListener('click', (e) => {
+            if (sendBtnPressed) {
+                sendBtnPressed = false;
+                return; // 防止重复触发
+            }
+            sendMessage();
+        });
+
+        // 输入框回车发送
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // 清除按钮
         clearBtn.addEventListener('click', clearConversation);
 
         // 页面加载时显示历史记录

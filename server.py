@@ -33,6 +33,7 @@ def chat():
     data = request.json
     user_message = data.get('message', '')
     conversation_id = data.get('conversation_id', 'default')
+    reasoning_effort = data.get('reasoning_effort', 'medium')
 
     # 获取或创建会话
     if conversation_id not in conversations:
@@ -66,6 +67,10 @@ def chat():
         "store": True,
         "tools": [{"type": "web_search"}]
     }
+
+    # 只有当推理不是关闭时才添加 reasoning 参数
+    if reasoning_effort != 'off':
+        api_data["reasoning"] = {"effort": reasoning_effort}
 
     def generate():
         response = requests.post(API_URL, headers=headers, json=api_data, stream=True)
